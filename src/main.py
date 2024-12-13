@@ -2,16 +2,13 @@
 from PIL import Image, ImageGrab
 import time
 from threading import Thread
-import wowzer
-from Xlib import display, X
+import gobzer
+import tkinter as tk
 import numpy as np
 import cv2 as cv    
 
-import sight.mana_bar as mana_bar
-import fishing.fishing_agent as fishing_agent
-
-
-FPS_REPORT_DELAY = 3
+import undercut_checker.undercut_agent as undercut_agent
+from undercut_checker.counter import log_amount
 
 
 class MainAgent:
@@ -25,18 +22,13 @@ class MainAgent:
         self.zone = "Feralas"
         self.time = "day"
 
-
 def update_screen(agent):
     print("Starting computer vision screen update...")
-    dsp = display.Display()
-    screen = dsp.screen()
-    width = screen.width_in_pixels
-    height = screen.height_in_pixels
-    print("Detected display resolution: " + str(width) + " x " + str(height))
 
+    # root = tk.Tk()
+    # width = root.winfo_screenwidth()
+    # height = root.winfo_screenheight()
 
-    loop_time = time.time()
-    fps_print_time = time.time()
     while True:
         screenshot = ImageGrab.grab()
         screenshot = np.array(screenshot)
@@ -45,18 +37,10 @@ def update_screen(agent):
         agent.cur_img = screenshot
         agent.cur_imgHSV = screenshotHSV
 
-        cur_time = time.time()
-        if cur_time - fps_print_time >= FPS_REPORT_DELAY:
-            print('FPS: {}'.format(1 / (cur_time - loop_time)))
-            fps_print_time = cur_time
-        loop_time = cur_time
-        cv.waitKey(1)
-
 def print_menu():
     print('Enter a command:')
     print('\tS\tStart main AI agent screen capture.')
-    print('\tZ\tSet zone')
-    print('\tF\tStart fishing.')
+    print('\tU\tStart checking your auctions.')
     print('\tQ\tQuit wowzer.')
 
 def run():
@@ -75,16 +59,11 @@ def run():
                 daemon=True)
             update_screen_thread.start()
 
-        elif user_input == 'f':        
-            agent = fishing_agent.FishingAgent(main_agent)
+        elif user_input == 'u':
+            print("Starting undercutting check in 3 seconds, make sure to focus your WoW window now!")
+            time.sleep(3) 
+            agent = undercut_agent.UndercutAgent(main_agent)
             agent.run()
-
-        elif user_input == 'z':
-            print('Enter zone name:')
-            print('\tOptions:')
-            print('\t\tDustwallow')
-            print('\t\tFeralas')
-            main_agent.zone = input().title().strip()
 
         elif user_input == 'q':
             print("Shutting down wowzer.")
@@ -97,4 +76,4 @@ def run():
     print("Done.")
     
 if __name__ == '__main__':
-    wowzer.run()
+    gobzer.run()
