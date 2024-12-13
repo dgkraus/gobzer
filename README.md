@@ -11,7 +11,7 @@ This bot is based on [wowzer](https://github.com/fjpereny/wowzer) made by [fjper
 
 ## Required setup
 
-1. Install the TSM addon and configure it for posting and cancelling auctions. Ensure minimum prices are set correctly, as the bot will not verify them.
+1. Install the TSM WoW addon and configure ingame it for posting and cancelling auctions. Ensure minimum prices are set correctly, as the bot will not verify them.
 2. Position your character in a location where the auction house, bank, and mailbox are within reach without moving. For best results without modifications, I recommend Valley of Wisdom in Ogrimmar (for the "open-air" bank NPC Tatepi at 40.0 46.6) using the newest store-bought auction house mount.
    Modifying the code to use mailbox toys etc. should be easy and straightforward but is not yet implemented.
 3. Set up WoW macros and keybinds as detailed below.
@@ -24,9 +24,9 @@ The bot uses the following default keybinds (modifiable in `undercut_agent.py`):
 - Interact button: **p**  
 
 So, in order to use this bot with the new store-bought auction house mount and standing next to the bank NPC Tatepi in Orgrimmar (40.0 46.6 on the Ogrimmar map) , the macros need to be set up as follows:
-Macro 1: "/tar Killia"
-Macro 2: "/tar Melanie Morten"
-Macro 3: "/tar Tatepi"
+- Macro 1: "/tar Killia"
+- Macro 2: "/tar Melanie Morten"
+- Macro 3: "/tar Tatepi"
 
 
 ## Features
