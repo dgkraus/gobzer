@@ -5,7 +5,7 @@ This bot is based on [wowzer](https://github.com/fjpereny/wowzer) made by [fjper
 
 [![Tutorial Youtube Video Link](https://img.youtube.com/vi/TCzMkWkpMS4/0.jpg)](https://www.youtube.com/watch?v=TCzMkWkpMS4)
 
-The idea of this bot is to emulate actual human gameplay as closely as possible. For this reason, the program does not emulate or spoof any inputs, which means that you cannot use your mouse and keyboard for other purposes while the bot is running. It is recommended to run WoW and this bot in a virtual machine so that the bot can do its thing whithout interfering with any user inputs. 
+The idea of this bot is to emulate actual human gameplay as closely as possible. For this reason, the bot uses actual mouse and keyboard inputs instead of messing with DLLs or memory, which means that you cannot use your mouse and keyboard for other purposes while the bot is running. It is recommended to run WoW and this bot in a virtual machine so that the bot can do its thing whithout interfering with any user inputs. 
 
 > **Warning**  
 > Using this bot may result in reports and account bans, as it directly interacts with other players' gameplay. Use at your own risk.
