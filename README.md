@@ -5,11 +5,12 @@ This bot is based on [wowzer](https://github.com/fjpereny/wowzer) made by [fjper
 
 [![Tutorial Youtube Video Link](https://img.youtube.com/vi/TCzMkWkpMS4/0.jpg)](https://www.youtube.com/watch?v=TCzMkWkpMS4)
 
+The idea of this bot is to emulate actual human gameplay as closely as possible. For this reason, the bot uses actual mouse and keyboard inputs instead of messing with DLLs or memory, which means that you cannot use your mouse and keyboard for other purposes while the bot is running. It is recommended to run WoW and this bot in a virtual machine so that the bot can do its thing whithout interfering with any user inputs. 
 
 > **Warning**  
 > Using this bot may result in reports and account bans, as it directly interacts with other players' gameplay. Use at your own risk.
 
-## Required setup
+## Required Setup
 
 1. Install the TSM WoW addon and configure ingame it for posting and cancelling auctions. Ensure minimum prices are set correctly, as the bot will not verify them.
 2. Position your character in a location where the auction house, bank, and mailbox are within reach without moving. For best results without modifications, I recommend Valley of Wisdom in Ogrimmar (for the "open-air" bank NPC Tatepi at 40.0 46.6) using the newest store-bought auction house mount.
@@ -37,6 +38,10 @@ So, in order to use this bot with the new store-bought auction house mount and s
   - Reposting items in the auction house
 - Designed for use with TSM addon
 - Human-like behavior adjustments for reduced detection
+
+## To-Do List
+- add a proper GUI and provide a way to run the bot without Python installed
+- I have been playing around with WoW's controller support, and I am wondering if it may be possible to run the bot wholly via a controller so the user can still use their mouse and keyboard at the same time. 
 
 
 ## License
