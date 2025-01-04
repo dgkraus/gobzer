@@ -5,7 +5,9 @@ from threading import Thread
 import gobzer
 import tkinter as tk
 import numpy as np
-import cv2 as cv    
+import cv2 as cv
+import keyboard
+import sys
 
 import undercut_checker.undercut_agent as undercut_agent
 from undercut_checker.counter import log_amount
@@ -14,13 +16,9 @@ from undercut_checker.counter import log_amount
 class MainAgent:
     def __init__(self):
         self.agents = []
-        self.fishing_thread = None
 
         self.cur_img = None
         self.cur_imgHSV = None
-
-        self.zone = "Feralas"
-        self.time = "day"
 
 def update_screen(agent):
     print("Starting computer vision screen update...")
@@ -45,6 +43,7 @@ def print_menu():
 
 def run():
     main_agent = MainAgent()
+    update_screen_thread = None
 
     print_menu()
     while True:
@@ -52,12 +51,15 @@ def run():
         user_input = str.lower(user_input).strip()
 
         if user_input == 's':
-            update_screen_thread = Thread(
-                target=update_screen, 
-                args=(main_agent,), 
-                name="update screen thread",
-                daemon=True)
-            update_screen_thread.start()
+            if update_screen_thread is None or not update_screen_thread.is_alive():
+                update_screen_thread = Thread(
+                    target=update_screen, 
+                    args=(main_agent,), 
+                    name="update screen thread",
+                    daemon=True)
+                update_screen_thread.start()
+            else:
+                print("Screen capture is already running! Enter ""U"" to start the auction bot.")
 
         elif user_input == 'u':
             print("Starting undercutting check in 3 seconds, make sure to focus your WoW window now!")
@@ -66,7 +68,7 @@ def run():
             agent.run()
 
         elif user_input == 'q':
-            print("Shutting down wowzer.")
+            print("Shutting down gobzer.")
             break       
         
         else:
