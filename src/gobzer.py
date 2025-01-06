@@ -1,6 +1,4 @@
 
-import main
-
 
 APP_NAME = 'gobzer'
 APP_VERSION = '0.0.1'
@@ -26,7 +24,6 @@ def run():
     header += "* If not, see <https://www.gnu.org/licenses/>.\n"
     header += "******************************************************************************************\n"
     print(header)
-    main.run()
 
 
 if __name__ == "__main__":
