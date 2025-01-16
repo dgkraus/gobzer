@@ -5,13 +5,14 @@ from threading import Thread
 import numpy as np
 import cv2 as cv
 import keyboard
-from gui import app
+from gui import app, cancel_button
+from config import settings
 
 import undercut_checker.undercut_agent as undercut_agent
 from undercut_checker.counter import log_amount
 
 update_screen_thread = None
-cancel_button = "c"
+cancel_keybind = settings["cancel_bot_kb"]
 
 class MainAgent:
     def __init__(self):
@@ -25,7 +26,7 @@ def update_screen(agent,root):
     print("Starting computer vision screen update...")
 
     while not cancel:
-        if keyboard.is_pressed(cancel_button):
+        if keyboard.is_pressed(cancel_keybind):
             cancel = True
         screenshot = ImageGrab.grab()
         screenshot = np.array(screenshot)
@@ -33,8 +34,7 @@ def update_screen(agent,root):
         screenshotHSV = cv.cvtColor(screenshot, cv.COLOR_BGR2HSV)
         agent.cur_img = screenshot
         agent.cur_imgHSV = screenshotHSV
-    print("done")
-    root.destroy()
+    cancel_button()
 
 def print_menu():
     print('Enter a command:')

@@ -1,10 +1,7 @@
-log_amount = 0
-log_counter = 0
+from config import settings
 
-def set_counter(number: int):
-    global log_amount
-    log_amount = number
-    return log_amount
+log_amount = settings["cross_characters"]
+log_counter = 0
 
 def increment_counter():
     global log_counter

@@ -7,14 +7,15 @@ from threading import Thread
 import os
 from random import randint
 from undercut_checker.counter import increment_counter, reset_counter
+from config import settings
 
 class UndercutAgent:
     def __init__(self, main_agent):
         #make sure to set the correct keybinds as you use it ingame here, or change your ingame keybinds to these:
-        self.auction_house_keybind = "1"
-        self.mailbox_keybind = "2"
-        self.bank_keybind = "3"
-        self.interact_keybind = "p"
+        self.auction_house_keybind = settings["auction_house_kb"]
+        self.mailbox_keybind = settings["mailbox_kb"]
+        self.bank_keybind = settings["bank_kb"]
+        self.interact_keybind = settings["interact_kb"]
 
         self.got_undercut = False
         self.main_agent = main_agent
@@ -104,14 +105,13 @@ class UndercutAgent:
         self.restock_items()
         self.open_post_scan()
         self.post_items()
-        self.idle_process() #this currently clashes with self.logout_process and will be integrated into that
-        #self.logout_process() #enable this to log between characters to post items not on the regional auction house, will clean this up later
+        self.logout_process()
 
     def find_button(self, button_asset):
-        threshold = 0.8 #if the program has trouble finding your buttons, lowering this number may help. going below 0.6 may give too many false results, however.
+        threshold = 0.9 #if the program has trouble finding your buttons, lowering this number may help. going below 0.6 may give too many false results, however.
         found_button = cv.matchTemplate(self.main_agent.cur_img, button_asset, cv.TM_CCOEFF_NORMED)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(found_button)
-        print(max_val)
+        #print(max_val)
         if max_val >= threshold:
             return max_loc
         else:
@@ -221,56 +221,52 @@ class UndercutAgent:
                 print("can't find post button, make sure the post scan window opened properly and that there are items to restock in your bags!")
 
     def logout_process(self):
-        print("all done, logging out now!")
-        current_count = increment_counter()
-        #print(current_count)
-        pyautogui.press("esc")
-        time.sleep(randint(10, 15)/100)
-        pyautogui.press("esc")
-        time.sleep(randint(10, 15)/100)
-        pyautogui.press("esc")
-        time.sleep(randint(10, 15)/100)
-        logout_button = self.find_button(self.logout)
-        if logout_button:
-            pyautogui.moveTo(logout_button[0]+(randint(1,20)),logout_button[1]+(randint(1,5)),(randint(5,8)/10),pyautogui.easeOutQuad)
-            time.sleep(randint(30, 50)/100)
-            pyautogui.click()
-        if current_count <= 4:
+        if settings["cross_realm_logging"] == 1:
+            print("all done, logging out now!")
+            current_count = increment_counter()
             while True:
-                time.sleep(4)
-                login_button = self.find_button(self.login)
-                if login_button:
-                    break    
-            pyautogui.press("down")
-            time.sleep(randint(10, 30)/100)
-            pyautogui.press("enter")
-        else:
-            time.sleep(randint(400, 500)/100)
-            for i in range(current_count-1):
-                pyautogui.press("up")
+                pyautogui.press("esc")
+                time.sleep(randint(100, 110)/100)
+                logout_button = self.find_button(self.logout)
+                if logout_button:
+                    print("found")
+                    pyautogui.moveTo(logout_button[0]+(randint(1,20)),logout_button[1]+(randint(1,5)),(randint(5,8)/10),pyautogui.easeOutQuad)
+                    time.sleep(randint(30, 50)/100)
+                    pyautogui.click()
+                    break
+            if current_count <= settings["cross_characters"]:
+                while True:
+                    time.sleep(4)
+                    login_button = self.find_button(self.login)
+                    if login_button:
+                        break    
+                pyautogui.press("down")
                 time.sleep(randint(10, 30)/100)
-            current_count = reset_counter()
-            pyautogui.press("enter")
-            time.sleep(100)
-            pyautogui.press("1")
-            time.sleep(100)
-            pyautogui.press("2")
-            time.sleep(100)
-            pyautogui.press("1")
-            time.sleep(100)
+                pyautogui.press("enter")
+            else:
+                time.sleep(randint(400, 500)/100)
+                for i in range(current_count-1):
+                    pyautogui.press("up")
+                    time.sleep(randint(10, 30)/100)
+                pyautogui.press("enter")
+                current_count = reset_counter()
+                self.idle_process()
+                
 
-        time.sleep(12)
-        while True:
-            time.sleep(4)
-            character_load = self.find_button(self.healthbar)
-            if character_load:
-                break
+            while True: #checks if the character is loaded in by looking for the healthbar and ends the loops once the healthbar is visible
+                time.sleep(4)
+                character_load = self.find_button(self.healthbar)
+                if character_load:
+                    print("character load found")
+                    break
 
-        self.run()
+            self.run_process()
+        else:
+            self.idle_process
 
     def idle_process(self):
         afk_duration = time.time()
-        idle_time = 600
+        idle_time = settings["idle_time"]
         max_time = 1500
         elapsed_time = time.time()
         print(f"idling, idle time set to {idle_time} seconds")
