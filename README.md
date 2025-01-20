@@ -40,8 +40,9 @@ So, in order to use this bot with the new store-bought auction house mount and s
 - Human-like behavior adjustments for reduced detection
 
 ## To-Do List
-- add a proper GUI and provide a way to run the bot without Python installed
-- I have been playing around with WoW's controller support, and I am wondering if it may be possible to run the bot wholly via a controller so the user can still use their mouse and keyboard at the same time. 
+- ~~add a proper GUI~~ and provide a way to run the bot without Python installed
+- make GUI more interactive by indicating which step the bot is on right now
+- add more tests to ensure that image detection works on different setups 
 
 
 ## License
