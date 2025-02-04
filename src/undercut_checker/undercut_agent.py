@@ -107,6 +107,8 @@ class UndercutAgent:
         self.post_items()
         self.logout_process()
 
+    # this is the identifier function that tells openCV to search for the button_asset on screen.
+    # cases where the button can't be identified aren't handled well yet and need to be improved.
     def find_button(self, button_asset):
         threshold = 0.9 #if the program has trouble finding your buttons, lowering this number may help. going below 0.6 may give too many false results, however.
         found_button = cv.matchTemplate(self.main_agent.cur_img, button_asset, cv.TM_CCOEFF_NORMED)
@@ -116,6 +118,15 @@ class UndercutAgent:
             return max_loc
         else:
             return None
+        
+    def navigate_to_button(self, coordinates: tuple):
+        x = coordinates[0]
+        y = coordinates[1]
+        time.sleep(randint(50, 80)/100)
+        pyautogui.moveTo(x+(randint(1,20)),y+(randint(1,5)),(randint(5,8)/10),pyautogui.easeOutQuad) # random numbers added to coordinates to make sure the exact coordinate isn't pressed over and over. first coordinate has more tolerance since buttons are horizontal rectangles
+        time.sleep(randint(50, 80)/100)
+        pyautogui.click()
+
 
     def open_auction_house(self):
         time.sleep(3)
@@ -127,10 +138,7 @@ class UndercutAgent:
     def open_cancel_scan(self):
         cancel_scan_button = self.find_button(self.cancel_scan)
         if cancel_scan_button:
-            time.sleep(randint(50, 80)/100)
-            pyautogui.moveTo(cancel_scan_button[0]+(randint(1,20)),cancel_scan_button[1]+(randint(1,5)),(randint(5,8)/10),pyautogui.easeOutQuad)
-            time.sleep(randint(50, 80)/100)
-            pyautogui.click()
+            self.navigate_to_button(cancel_scan_button)
             time.sleep(randint(200, 250)/100)
         else:
             print("can't find cancel button, make sure the auction house tab is open!")
@@ -140,8 +148,8 @@ class UndercutAgent:
         cancel_auction_button = self.find_button(self.cancel_auction)
         if cancel_auction_button:
             self.cancel_button_found = True
-            if pyautogui.position()[0]-cancel_auction_button[0] > 21 or pyautogui.position()[0]-cancel_auction_button[0] < 0:
-                pyautogui.moveTo(cancel_auction_button[0]+(randint(1,20)),cancel_auction_button[1]+(randint(1,5)),(randint(5,8)/10),pyautogui.easeOutQuad)
+            if pyautogui.position()[0]-cancel_auction_button[0] > 21 or pyautogui.position()[0]-cancel_auction_button[0] < 0: #since this function calls itself until there are no more items to cancel, this check ensures that the mouse doesn't constantly need to move
+                self.navigate_to_button(cancel_auction_button)
                 time.sleep(randint(20, 25)/100)
             pyautogui.click()
             time.sleep(randint(15, 20)/100)
@@ -159,11 +167,11 @@ class UndercutAgent:
         time.sleep(randint(50, 80)/100)
         retrieve_mail_button = self.find_button(self.mailbox)
         if retrieve_mail_button:
-            pyautogui.moveTo(retrieve_mail_button[0]+(randint(1,20)),retrieve_mail_button[1]+(randint(5,8)/10),(randint(5,8)/10),pyautogui.easeOutQuad)
-            time.sleep(randint(50, 80)/100)
-            pyautogui.click()
+            self.navigate_to_button(retrieve_mail_button)
             time.sleep(randint(500, 550)/100)
             print("mail retrieved, moving to restock items")
+        else:
+            print("couldn't find mail button, make sure the mailbox opened or check if the NPC is too far or the keybind is wrong")
     
     def restock_items(self):
         pyautogui.press(self.bank_keybind)
@@ -172,14 +180,10 @@ class UndercutAgent:
         time.sleep(randint(50, 80)/100)
         warbank_button = self.find_button(self.warbank_tab)
         if warbank_button:
-            pyautogui.moveTo(warbank_button[0]+(randint(1,20)),warbank_button[1]+(randint(1,5)),(randint(4,6)/10),pyautogui.easeOutQuad)
-            time.sleep(randint(50, 80)/100)
-            pyautogui.click()
+            self.navigate_to_button(warbank_button)
             restock_button = self.find_button(self.restock)
             if restock_button:
-                pyautogui.moveTo(restock_button[0]+(randint(1,20)),restock_button[1]+(randint(1,5)),(randint(5,8)/10),pyautogui.easeOutQuad)
-                time.sleep(randint(50, 80)/100)
-                pyautogui.click()
+                self.navigate_to_button(restock_button)
                 time.sleep(randint(400, 450)/100)
                 print("items restocked, moving to post items")
             else:
@@ -192,24 +196,20 @@ class UndercutAgent:
         time.sleep(randint(30, 40)/100)
         pyautogui.press("p")
         time.sleep(randint(100, 150)/100)
-        threshold = 0.95
         post_button = self.find_button(self.post_scan)
         if post_button:
-            pyautogui.moveTo(post_button[0]+(randint(1,20)),post_button[1]+(randint(1,5)),(randint(5,8)/10),pyautogui.easeOutQuad)
-            time.sleep(randint(30, 50)/100)
-            pyautogui.click()
+            self.navigate_to_button(post_button)
             time.sleep(randint(50, 80)/100)
             print("posting items now")
         else:
             print("could not find post scan button, try again and make sure the auction house window opens after the restocking process")
 
     def post_items(self):
-        threshold = 0.9
         post_button = self.find_button(self.post_item_button)
         if post_button:
             self.post_button_found = True
-            if pyautogui.position()[1]-post_button[1] > 12 or pyautogui.position()[1]-post_button[1] < 0:
-                pyautogui.moveTo(post_button[0]+(randint(1,20)),post_button[1]+(randint(1,5)),(randint(5,8)/10),pyautogui.easeOutQuad)
+            if pyautogui.position()[1]-post_button[1] > 12 or pyautogui.position()[1]-post_button[1] < 0: # another check for current mouse position to ensure cursor doesn't move upon multiple function repeats
+                self.navigate_to_button(post_button)
                 time.sleep(randint(20, 25)/100)
             pyautogui.click()
             time.sleep(randint(10, 15)/100)
@@ -229,10 +229,8 @@ class UndercutAgent:
                 time.sleep(randint(100, 110)/100)
                 logout_button = self.find_button(self.logout)
                 if logout_button:
-                    print("found")
-                    pyautogui.moveTo(logout_button[0]+(randint(1,20)),logout_button[1]+(randint(1,5)),(randint(5,8)/10),pyautogui.easeOutQuad)
+                    self.navigate_to_button(logout_button)
                     time.sleep(randint(30, 50)/100)
-                    pyautogui.click()
                     break
             if current_count <= settings["cross_characters"]:
                 while True:
@@ -262,7 +260,7 @@ class UndercutAgent:
 
             self.run_process()
         else:
-            self.idle_process
+            self.idle_process()
 
     def idle_process(self):
         afk_duration = time.time()
