@@ -110,7 +110,7 @@ class UndercutAgent:
     # this is the identifier function that tells openCV to search for the button_asset on screen.
     # cases where the button can't be identified aren't handled well yet and need to be improved.
     def find_button(self, button_asset):
-        threshold = 0.9 #if the program has trouble finding your buttons, lowering this number may help. going below 0.6 may give too many false results, however.
+        threshold = 0.75 #if the program has trouble finding your buttons, lowering this number may help. going below 0.6 may give too many false results, however.
         found_button = cv.matchTemplate(self.main_agent.cur_img, button_asset, cv.TM_CCOEFF_NORMED)
         min_val, max_val, min_loc, max_loc = cv.minMaxLoc(found_button)
         #print(max_val)
